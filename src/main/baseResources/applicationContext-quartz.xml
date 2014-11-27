@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<bean id="schedulerFactoryBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="logParseTrigger" />
+				<ref bean="historyRankingTrigger" />
+			</list>
+		</property>
+	</bean>
+	
+	
+
+	<bean id="logParseJob" class="net.doddata.tmall.job.LogParseJob">
+	</bean>
+	<bean id="logParseDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="logParseJob" />
+		</property>
+		<property name="targetMethod" value="execute"></property>
+		<property name="concurrent" value="false"></property>
+	</bean>
+	<bean id="logParseTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="logParseDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 30 * * * ?</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="historyRankingJob" class="net.doddata.tmall.job.HistoryRankingJob">
+	</bean>
+	<bean id="historyRankingDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="historyRankingJob" />
+		</property>
+		<property name="targetMethod" value="execute"></property>
+		<property name="concurrent" value="false"></property>
+	</bean>
+	<bean id="historyRankingTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="historyRankingDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 30 1 * * ?</value>
+		</property>
+	</bean>
+
+
+	<!-- 数据监控的定时任务 配置开始 
+	<bean id="monitorJob" class="com.cubead.ncs.datamonitor.task.MonitorJob">
+		<property name="enable" value="${job.monitor.enable}"></property>
+	</bean>
+
+	<bean id="monitorJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="monitorJob" />
+		</property>
+		<property name="targetMethod">
+			<value>doIt</value>
+		</property>
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="monitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="monitorJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 9 * * ?</value>
+		</property>
+	</bean>
+	-->
+	<!-- 数据监控的定时任务 配置 结束 -->
+
+<!--  
+	<bean id="yhdLogFileParseTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail">
+			<ref bean="yhdLogFileParseDetail" />
+		</property>
+		<property name="startDelay">
+			<value>10000</value>
+		</property>
+		<property name="repeatInterval"> 
+			<value>2000</value>
+		</property>
+	</bean>
+	-->
+
+</beans>
